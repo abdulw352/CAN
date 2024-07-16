@@ -95,6 +95,76 @@ class TopologicalKnowledgeGraph:
             "hallucination_risk": hallucination_risk
         }
 
+    def visualize_knowledge_graph(self, figsize=(20, 20), node_size=3000, font_size=8):
+        """
+        Create a visual representation of the knowledge graph with accuracy information.
+        
+        :param figsize: Tuple specifying the figure size
+        :param node_size: Size of the nodes in the graph
+        :param font_size: Font size for node labels
+        """
+        # Create a spring layout for the graph
+        pos = nx.spring_layout(self.graph, k=0.5, iterations=50)
+        
+        # Prepare node colors based on confidence scores
+        node_colors = []
+        for node in self.graph.nodes():
+            confidence = self.get_node_confidence(node)
+            # Map confidence score to a color (red for low, yellow for medium, green for high)
+            color = plt.cm.RdYlGn(confidence)
+            node_colors.append(color)
+        
+        # Create the figure and axis
+        fig, ax = plt.subplots(figsize=figsize)
+        
+        # Draw the graph
+        nx.draw_networkx_nodes(self.graph, pos, node_color=node_colors, node_size=node_size, alpha=0.8, ax=ax)
+        nx.draw_networkx_edges(self.graph, pos, edge_color='gray', arrows=True, arrowsize=20, ax=ax)
+        
+        # Add labels to the nodes
+        labels = {}
+        for node in self.graph.nodes():
+            confidence = self.get_node_confidence(node)
+            labels[node] = f"{node}\n({confidence:.2f})"
+        nx.draw_networkx_labels(self.graph, pos, labels, font_size=font_size, font_weight="bold", ax=ax)
+        
+        # Add a color bar to show the confidence scale
+        sm = plt.cm.ScalarMappable(cmap=plt.cm.RdYlGn, norm=plt.Normalize(vmin=0, vmax=1))
+        sm.set_array([])
+        cbar = plt.colorbar(sm)
+        cbar.set_label('Confidence Score', rotation=270, labelpad=25)
+        
+        # Remove axis
+        ax.set_axis_off()
+        
+        # Set the title
+        plt.title("Topological Knowledge Graph with Accuracy Information", fontsize=16)
+        
+        # Show the plot
+        plt.tight_layout()
+        plt.show()
+
+    def build_knowledge_library(self, topics: List[str], depth: int = 2):
+        """
+        Build a library of questions and answers for given topics.
+        
+        :param topics: List of initial topics to explore
+        :param depth: Depth of graph expansion for each topic
+        """
+        for topic in topics:
+            self.expand_graph(topic, depth)
+            
+        for node in self.graph.nodes():
+            question_prompt = f"Generate a question about {node}:"
+            question = self.generate_small_llm_response(question_prompt)
+            answer = self.generate_large_llm_response(question)
+            self.graph.nodes[node]['question'] = question
+            self.graph.nodes[node]['answer'] = answer
+            self.update_node_confidence(node)
+
+
+
+
 # Usage example
 tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
 result = tkg.query_with_confidence("What is the capital of France?")
