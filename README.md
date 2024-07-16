@@ -6,7 +6,7 @@ Collaborative Adversarial Networks
 
 ### Overview
 
-This library provides a framework for creating a topological knowledge graph to assess and improve the confidence of Large Language Model (LLM) responses. It uses a smaller LLM (like Phi-2) with Retrieval-Augmented Generation (RAG) connected to a search engine to build a knowledge graph, and then grades a larger LLM's knowledge to model its understanding and predict potential hallucinations.
+This library provides a framework for creating a topological knowledge graph to assess and improve the confidence of Large Language Model (LLM) responses. It uses a smaller LLM (like Phi-3) with Retrieval-Augmented Generation (RAG) connected to a search engine to build a knowledge graph, and then grades a larger LLM's knowledge to model its understanding and predict potential hallucinations.
 
 ### Features
 
