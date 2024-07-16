@@ -162,7 +162,18 @@ class TopologicalKnowledgeGraph:
             self.graph.nodes[node]['answer'] = answer
             self.update_node_confidence(node)
 
-
+    def update_node_confidence(self, topic: str):
+        """
+        Update the confidence score for a given topic based on the large LLM's answer.
+        """
+        node_data = self.graph.nodes[topic]
+        question = node_data.get('question', '')
+        large_llm_answer = node_data.get('answer', '')
+        expected_summary = node_data.get('summary', '')
+        
+        grading_prompt = f"Question: {question}\nExpected answer summary: {expected_summary}\nLarge LLM answer: {large_llm_answer}\nGrade the answer on a scale of 0 to 1:"
+        grade = float(self.generate_small_llm_response(grading_prompt))
+        self.graph.nodes[topic]['confidence'] = grade
 
 
 # Usage example
