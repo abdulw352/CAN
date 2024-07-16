@@ -26,4 +26,4 @@ This library provides a framework for creating a topological knowledge graph to 
 
 ### Installation
 
-1. Clone this repository:
+...
