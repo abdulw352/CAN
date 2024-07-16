@@ -177,6 +177,17 @@ class TopologicalKnowledgeGraph:
 
 
 # Usage example
+# tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
+# result = tkg.query_with_confidence("What is the capital of France?")
+# print(result)
+
+
+# Initialize the graph
 tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
-result = tkg.query_with_confidence("What is the capital of France?")
-print(result)
+
+# Build the knowledge library
+initial_topics = ["Artificial Intelligence", "Climate Change", "Quantum Computing"]
+tkg.build_knowledge_library(initial_topics, depth=2)
+
+# Visualize the graph
+tkg.visualize_knowledge_graph()
