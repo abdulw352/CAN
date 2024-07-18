@@ -1,6 +1,8 @@
 import networkx as nx
 from typing import List, Dict, Any
 import requests
+import random
+from collections import defaultdict
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
@@ -174,6 +176,22 @@ class TopologicalKnowledgeGraph:
         grading_prompt = f"Question: {question}\nExpected answer summary: {expected_summary}\nLarge LLM answer: {large_llm_answer}\nGrade the answer on a scale of 0 to 1:"
         grade = float(self.generate_small_llm_response(grading_prompt))
         self.graph.nodes[topic]['confidence'] = grade
+
+    def generate_subject_questions(self, subject: str, num_questions: int = 10) -> List[Dict[str, str]]:
+        """
+        Generate a list of test questions for a given subject.
+        
+        :param subject: The subject area (e.g., 'math', 'programming', 'language')
+        :param num_questions: Number of questions to generate
+        :return: List of dictionaries containing questions and expected answers
+        """
+        questions = []
+        for _ in range(num_questions):
+            prompt = f"Generate a {subject} question with a clear, concise answer:"
+            response = self.generate_small_llm_response(prompt)
+            question, answer = response.split("\nAnswer: ")
+            questions.append({"question": question.strip(), "expected_answer": answer.strip()})
+        return questions
 
 
 # Usage example
