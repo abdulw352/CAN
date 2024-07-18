@@ -193,6 +193,17 @@ class TopologicalKnowledgeGraph:
             questions.append({"question": question.strip(), "expected_answer": answer.strip()})
         return questions
 
+    def evaluate_response(self, expected: str, actual: str) -> float:
+        """
+        Evaluate the similarity between the expected and actual answers.
+        
+        :param expected: The expected answer
+        :param actual: The actual answer provided by the large LLM
+        :return: A score between 0 and 1 indicating the similarity
+        """
+        prompt = f"Compare these two answers and rate their similarity on a scale from 0 to 1, where 1 is identical in meaning and 0 is completely different:\nExpected: {expected}\nActual: {actual}\nSimilarity score:"
+        score = float(self.generate_small_llm_response(prompt))
+        return score
 
 # Usage example
 # tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
