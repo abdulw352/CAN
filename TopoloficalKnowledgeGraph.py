@@ -236,6 +236,20 @@ class TopologicalKnowledgeGraph:
             "detailed_results": detailed_results
         }
 
+    def evaluate_multiple_subjects(self, subjects: List[str], num_questions: int = 10) -> Dict[str, float]:
+        """
+        Evaluate the LLM's performance across multiple subjects.
+        
+        :param subjects: List of subjects to evaluate
+        :param num_questions: Number of questions per subject
+        :return: Dictionary of subjects and their scores
+        """
+        subject_scores = {}
+        for subject in subjects:
+            result = self.calculate_subject_score(subject, num_questions)
+            subject_scores[subject] = result['overall_score']
+        return subject_scores
+
 # Usage example
 # tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
 # result = tkg.query_with_confidence("What is the capital of France?")
