@@ -205,6 +205,37 @@ class TopologicalKnowledgeGraph:
         score = float(self.generate_small_llm_response(prompt))
         return score
 
+    def calculate_subject_score(self, subject: str, num_questions: int = 10) -> Dict[str, Any]:
+        """
+        Calculate a quantifiable metric score for a given subject.
+        
+        :param subject: The subject area to evaluate
+        :param num_questions: Number of test questions to use
+        :return: A dictionary containing the overall score and detailed results
+        """
+        questions = self.generate_subject_questions(subject, num_questions)
+        total_score = 0
+        detailed_results = []
+
+        for q in questions:
+            large_llm_answer = self.generate_large_llm_response(q['question'])
+            question_score = self.evaluate_response(q['expected_answer'], large_llm_answer)
+            total_score += question_score
+            detailed_results.append({
+                "question": q['question'],
+                "expected_answer": q['expected_answer'],
+                "llm_answer": large_llm_answer,
+                "score": question_score
+            })
+
+        average_score = total_score / num_questions
+        return {
+            "subject": subject,
+            "overall_score": average_score,
+            "num_questions": num_questions,
+            "detailed_results": detailed_results
+        }
+
 # Usage example
 # tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
 # result = tkg.query_with_confidence("What is the capital of France?")
