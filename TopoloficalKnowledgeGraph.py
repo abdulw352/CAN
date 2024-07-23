@@ -250,6 +250,32 @@ class TopologicalKnowledgeGraph:
             subject_scores[subject] = result['overall_score']
         return subject_scores
 
+
+     def visualize_subject_performance(self, subject_scores: Dict[str, float]):
+        """
+        Create a bar chart to visualize the LLM's performance across different subjects.
+        
+        :param subject_scores: Dictionary of subjects and their scores
+        """
+        subjects = list(subject_scores.keys())
+        scores = list(subject_scores.values())
+
+        plt.figure(figsize=(12, 6))
+        bars = plt.bar(subjects, scores, color='skyblue')
+        plt.title("LLM Performance Across Subjects", fontsize=16)
+        plt.xlabel("Subjects", fontsize=12)
+        plt.ylabel("Score", fontsize=12)
+        plt.ylim(0, 1)
+
+        # Add value labels on top of each bar
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., height,
+                     f'{height:.2f}',
+                     ha='center', va='bottom')
+
+        plt.tight_layout()
+        plt.show()
 # Usage example
 # tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
 # result = tkg.query_with_confidence("What is the capital of France?")
