@@ -276,6 +276,51 @@ class TopologicalKnowledgeGraph:
 
         plt.tight_layout()
         plt.show()
+
+    def generate_performance_report(self, subjects: List[str], num_questions: int = 10) -> str:
+        """
+        Generate a detailed performance report for multiple subjects.
+        
+        :param subjects: List of subjects to evaluate
+        :param num_questions: Number of questions per subject
+        :return: A formatted string containing the performance report
+        """
+        report = "LLM Performance Report\n"
+        report += "=====================\n\n"
+
+        subject_scores = self.evaluate_multiple_subjects(subjects, num_questions)
+        
+        for subject, score in subject_scores.items():
+            report += f"{subject.capitalize()} Performance:\n"
+            report += f"Overall Score: {score:.2f}\n"
+            report += f"Number of test questions: {num_questions}\n"
+            report += "\nStrengths and Weaknesses:\n"
+            
+            if score > 0.8:
+                report += f"- Excellent performance in {subject}\n"
+            elif score > 0.6:
+                report += f"- Good performance in {subject}, but room for improvement\n"
+            else:
+                report += f"- Needs significant improvement in {subject}\n"
+            
+            report += "\n" + "="*30 + "\n\n"
+
+        average_score = sum(subject_scores.values()) / len(subject_scores)
+        report += f"Overall Average Score Across All Subjects: {average_score:.2f}\n\n"
+
+        report += "Recommendations:\n"
+        if average_score > 0.8:
+            report += "- The LLM shows strong performance across most subjects.\n"
+            report += "- Focus on maintaining high quality and possibly expanding to more specialized topics.\n"
+        elif average_score > 0.6:
+            report += "- The LLM performs well but has room for improvement in some areas.\n"
+            report += "- Consider additional training or fine-tuning in lower-scoring subjects.\n"
+        else:
+            report += "- The LLM needs significant improvement across multiple subjects.\n"
+            report += "- Recommend comprehensive review and retraining, especially in the lowest-scoring areas.\n"
+
+        return report
+        
 # Usage example
 # tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
 # result = tkg.query_with_confidence("What is the capital of France?")
