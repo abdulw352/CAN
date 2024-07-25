@@ -327,12 +327,23 @@ class TopologicalKnowledgeGraph:
 # print(result)
 
 
-# Initialize the graph
-tkg = TopologicalKnowledgeGraph("microsoft/phi-3", "gpt-3.5-turbo", "your_search_api_key")
-
 # Build the knowledge library
-initial_topics = ["Artificial Intelligence", "Climate Change", "Quantum Computing"]
-tkg.build_knowledge_library(initial_topics, depth=2)
+# initial_topics = ["Artificial Intelligence", "Climate Change", "Quantum Computing"]
+# tkg.build_knowledge_library(initial_topics, depth=2)
 
-# Visualize the graph
-tkg.visualize_knowledge_graph()
+# # Visualize the graph
+# tkg.visualize_knowledge_graph()
+
+# Initialize the graph
+tkg = TopologicalKnowledgeGraph("microsoft/phi-2", "gpt-3.5-turbo", "your_search_api_key")
+
+# Define subjects to evaluate
+subjects = ["math", "programming", "language comprehension", "history", "science"]
+
+# Generate and print the performance report
+report = tkg.generate_performance_report(subjects, num_questions=5)
+print(report)
+
+# Visualize the performance across subjects
+subject_scores = tkg.evaluate_multiple_subjects(subjects, num_questions=5)
+tkg.visualize_subject_performance(subject_scores)
